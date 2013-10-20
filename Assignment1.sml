@@ -1,15 +1,23 @@
-fun is_older (x : int * int *int, y : int * int * int) =
-    if #1 x < #1 y then true
-    else if #1 x > #1 y then false
-    else if #2 x < #2 y then true
-    else if #2 x > #2 y then false
-    else if #3 x < #3 y then true
-    else false
+fun is_older (date1 : int * int *int, date2 : int * int * int) =
+    (* Name the parameters to increase readability*)
+    let (* Use let binding to avoid repetition*)
+	val y1 = #1 date1
+        val m1 = #2 date1
+        val d1 = #3 date1
+        val y2 = #1 date2
+        val m2 = #2 date2
+        val d2 = #3 date2
+    in
+	(* This is more concise *)
+	y1 < y2
+        orelse (y1 = y2 andalso m1 < m2)
+        orelse (y1 = y2 andalso m1 = m2 andalso d1 < d2)
+    end
 
 fun number_in_month (dates : (int * int * int) list, month : int) =
     if null dates then 0
     else
-	if #2 (hd(dates)) = month then 1 + number_in_month(tl dates, month)
+	if #2 (hd dates) = month then 1 + number_in_month(tl dates, month)
 	else number_in_month(tl dates, month)
 
 fun number_in_months (dates : (int * int * int) list, months: int list) =
@@ -20,7 +28,8 @@ fun number_in_months (dates : (int * int * int) list, months: int list) =
 fun dates_in_month (dates : (int * int * int) list, month : int) =
     if null dates then []
     else
-	if #2 (hd dates) = month then [hd dates] @ dates_in_month(tl dates, month)
+	if #2 (hd dates) = month
+	then (hd dates) :: dates_in_month(tl dates, month)
         else dates_in_month(tl dates, month)
 
 fun dates_in_months (dates : (int * int * int) list, months : int list) =
@@ -33,19 +42,28 @@ fun get_nth (strlist : string list, n : int) =
     else get_nth(tl strlist, n - 1)
 
 fun date_to_string (date : int * int * int) =
-    let val  month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    let val  month_names = ["January", "February", "March",
+			    "April", "May", "June",
+			    "July", "August", "September",
+			    "October", "November", "December"]
         val  month_of_date = get_nth(month_names, #2 date)
     in 
-    month_of_date ^ " " ^ Int.toString(#3 date) ^ ", " ^ Int.toString(#1 date)
+	month_of_date ^ " " ^ Int.toString(#3 date) ^ ", " ^ Int.toString(#1 date)
     end
 
 fun number_before_reaching_sum (sum : int, xs : int list) =
     let
         val rem_sum  = sum - hd xs
     in
-        if (rem_sum > 0) then 1 + number_before_reaching_sum(rem_sum, tl xs) else 0
+        if (rem_sum > 0)
+	then 1 + number_before_reaching_sum(rem_sum, tl xs)
+	else 0
     end
-    
+(*
+    if sum <= hd lst
+    then 0
+    else 1 + number_before_reaching_sum(sum - hd lst, tl lst)
+*)    
 
 fun what_month (day : int) =
     let
@@ -70,3 +88,17 @@ fun oldest (dates : (int * int * int) list) =
                 else tail_oldest
             else SOME head_dates
         end
+(* arguably better alternate solution avoiding isSome / valOf *)
+(*fun oldest (dates : (int * int * int) list) =
+    if null dates
+    then NONE
+    else let fun f dates =
+		 if null (tl dates)
+		 then hd dates
+		 else let val ans = f (tl dates)
+		      in if is_older(ans, hd dates)
+			 then ans
+			 else hd dates
+		      end
+	 in SOME(f dates) end 
+*)
