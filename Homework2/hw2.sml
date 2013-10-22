@@ -25,14 +25,14 @@ fun get_substitutions1(substitutions, s) =
 
 fun get_substitutions2(substitutions, s) =
     let
-	fun aux(subs, str, acc) =
+	fun aux(subs, acc) =
 	    case subs of
 		[] => acc
-	      | h::subs' => case all_except_option(str, h) of
-				NONE => aux(subs', str, acc)
-			      | SOME lst => aux(subs', str, acc @ lst)
+	      | h::subs' => case all_except_option(s, h) of
+				NONE => aux(subs', acc)
+			      | SOME lst => aux(subs', acc @ lst)
     in
-	aux(substitutions, s, [])
+	aux(substitutions, [])
     end
 			
 
