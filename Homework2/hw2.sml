@@ -49,7 +49,7 @@ fun similar_names(substitutions, {first=f, middle=m, last=l}) =
     in
 	case subs_first of
 	    [] => {first = f, middle = m, last = l}
-	  | h::subs' => [{first = f, middle = m, last = l}, {first = h, middle = m, last = l}] @ 
+	 (* | h::subs' => [{first = f, middle = m, last = l}, {first = h, middle = m, last = l}] @ *)
 	(*aux(substitutions, {first=f, middle=m, last=l})*)
     end
 
@@ -65,3 +65,38 @@ datatype move = Discard of card | Draw
 exception IllegalMove
 
 (* put your solutions for problem 2 here *)
+fun card_color c =
+    case c of
+	(Clubs, _) => Black
+      | (Diamonds, _) => Red
+      | (Hearts, _) => Red
+      | (Spades, _) => Black
+
+fun card_value c = 
+    case c of
+	(_, Ace) => 11
+      | (_, Num n) => n
+      | (_, _) => 10
+
+fun remove_card (cs, c, e) =
+    case cs of
+      (* This is not correct logic
+	[] => []
+      | x::[] => if x = c then [] else cs *)
+	[] => raise e
+      | x::xs => if x = c then xs
+		 else x::remove_card(xs, c, e)
+
+fun all_same_color cs =
+    case cs of
+	(* [] => true *)
+	(* Cannot have bar before first pattern *)
+	c1::c2::cs' => card_color c1 = card_color c2
+		       andalso
+		       all_same_color (c2::cs') (* parenthesis is needed *)
+      | _ => true
+
+fun sum_cards cs = 
+    case cs of
+	[] => 0
+      | c::cs' => card_value c + sum_cards cs'
