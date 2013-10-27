@@ -51,6 +51,17 @@ fun longest_string2 xs =
 	       ) "" xs
 
 fun longest_string_helper f xs=
-    List.foldl (fn (acc, x) => f()) false xs
+    foldl (fn (acc, x) => 
+	      if f (String.size acc, String.size x) then acc
+	      else x
+	  ) "" xs
 
-(*longest_string3*)
+val longest_string3 = longest_string_helper (fn (a, b) => a > b)
+
+val longest_string4 = longest_string_helper (fn (a, b) => a >= b)
+
+val longest_capitalized = longest_string1 o only_capitals
+
+(* At this step, the qualification of the functions are not needed*)
+(* I explicitly write them out for the sake of clarity *)
+val rev_string = String.implode o List.rev o String.explode
