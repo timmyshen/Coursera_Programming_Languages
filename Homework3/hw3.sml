@@ -40,22 +40,17 @@ fun only_capitals xs =
 
 fun longest_string1 xs =
     List.foldl (fn (acc, x) =>
-		   let
-		       val sx = String.size x
-		       val sacc = String.size acc
-		   in
-		       if sacc > sx then acc
-		       else x
-		   end
+		   if String.size acc > String.size x then acc
+		   else x
 	       ) "" xs
 
 fun longest_string2 xs =
     List.foldl (fn (acc, x) =>
-		   let
-		       val sx = String.size x
-		       val sacc = String.size acc
-		   in
-		       if sacc >= sx then acc
-		       else x
-		   end
+		   if String.size acc >= String.size x then acc
+		   else x
 	       ) "" xs
+(*
+fun longest_string_helper f xs=
+    List.foldl (fn (acc, x) => f()) false xs
+*)
+(*longest_string3*)
