@@ -37,6 +37,11 @@ fun get_substitutions2 (substitutions, s) =
 			
 fun similar_names (substitutions, {first=f, middle=m, last=l}) =
     let
+	fun make_names xs =
+	    case xs of
+		[] => []
+	      | x::xs' => {first=x, middle=m, last=l}::(make_names(xs'))
+    (*
 	fun create_similar_name(sub_first) =
 	    {first=sub_first, middle=m, last=l}
 
@@ -46,11 +51,9 @@ fun similar_names (substitutions, {first=f, middle=m, last=l}) =
 	      | h::subs' => aux(subs',acc) @ [create_similar_name(h)]
 
 	val subs_first = get_substitutions2(substitutions, f)
+    *)
     in
-	case subs_first of
-	    [] => {first = f, middle = m, last = l}
-	 (* | h::subs' => [{first = f, middle = m, last = l}, {first = h, middle = m, last = l}] @ *)
-	(*aux(substitutions, {first=f, middle=m, last=l})*)
+	{first=f, middle=m, last=l}::make_names(get_substitutions2(substitutions, f))
     end
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
