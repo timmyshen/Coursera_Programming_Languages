@@ -7,7 +7,7 @@ fun same_string(s1 : string, s2 : string) =
     s1 = s2
 
 (* put your solutions for problem 1 here *)
-fun all_except_option(s, strlst) =
+fun all_except_option (s, strlst) =
     case strlst of
 	[] => NONE
       | h::xs => if same_string(s, h) then SOME xs
@@ -16,14 +16,14 @@ fun all_except_option(s, strlst) =
 			 NONE => NONE
 		       | SOME xs' => SOME (h::xs')
 
-fun get_substitutions1(substitutions, s) =
+fun get_substitutions1 (substitutions, s) =
     case substitutions of
 	[]=>[]
       | h::subs' => case all_except_option(s, h) of
 			NONE => get_substitutions1(subs', s)
 		      | SOME xs => xs @ get_substitutions1(subs', s)
 
-fun get_substitutions2(substitutions, s) =
+fun get_substitutions2 (substitutions, s) =
     let
 	fun aux(subs, acc) =
 	    case subs of
@@ -35,7 +35,7 @@ fun get_substitutions2(substitutions, s) =
 	aux(substitutions, [])
     end
 			
-fun similar_names(substitutions, {first=f, middle=m, last=l}) =
+fun similar_names (substitutions, {first=f, middle=m, last=l}) =
     let
 	fun create_similar_name(sub_first) =
 	    {first=sub_first, middle=m, last=l}
@@ -97,6 +97,46 @@ fun all_same_color cs =
       | _ => true
 
 fun sum_cards cs = 
-    case cs of
-	[] => 0
-      | c::cs' => card_value c + sum_cards cs'
+    (* case cs of
+	[] => 0 *)
+      (* Non-tail-call *)
+      (* | c::cs' => card_value c + sum_cards cs' *)
+    let fun aux(xs, acc) =
+	    case xs of
+		[] => acc (* Not 0 *)
+	      | x::xs' => aux(xs', acc + card_value x)
+    in
+	aux(cs, 0)
+    end
+
+fun score (cs, goal) =
+    let
+	val sum = sum_cards cs
+    in
+	if
+	    sum > goal
+	then 
+	    let 
+		val prelim = 3 * (sum - goal)
+	    in
+		if all_same_color cs then prelim div 2
+		else prelim
+	    end
+	else
+	    let
+		val prelim = (goal - sum)
+	    in
+		if all_same_color cs then prelim div 2
+		else prelim
+	    end
+    end
+	(* The above seems silly but straight-forward. *)
+	(* The following is a more clever answer *)
+	(*
+	let 
+	    val sum = sum_cards cs
+	in
+	    (if sum >= goal then 3 * (sum - goal) else goal - sum)
+	    div (if all_same_color cs then 2 else 1)
+	end
+	*)
