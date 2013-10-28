@@ -65,3 +65,23 @@ val longest_capitalized = longest_string1 o only_capitals
 (* At this step, the qualification of the functions are not needed*)
 (* I explicitly write them out for the sake of clarity *)
 val rev_string = String.implode o List.rev o String.explode
+
+fun first_answer f xs =
+    case xs of
+	[] => raise NoAnswer
+      | x::xs' => case f x of
+		     NONE => first_answer f xs'
+		   | SOME y => y
+
+fun all_answers f xs =
+    (*    let fun aux ( *)
+    (* Need tail call *)
+    case xs of
+	[] => SOME []
+      | x::xs' => case f x of
+		      NONE => NONE
+		    | SOME ys => case all_answers f xs' of
+				     NONE => NONE
+				   | SOME zs => SOME (ys @ zs)
+
+fun count_wildcards p = g (fn () => 
