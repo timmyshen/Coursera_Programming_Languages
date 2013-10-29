@@ -74,15 +74,22 @@ fun first_answer f xs =
 		   | SOME y => y
 
 fun all_answers f xs =
-    (*    let fun aux ( *)
     (* Need tail call *)
-    case xs of
+    (* case xs of
 	[] => SOME []
       | x::xs' => case f x of
 		      NONE => NONE
 		    | SOME ys => case all_answers f xs' of
 				     NONE => NONE
 				   | SOME zs => SOME (ys @ zs)
+     *)
+    let fun help_answer [] acc = SOME acc
+	  | help_answer (x::xs') acc = case f x of
+					   NONE => NONE
+					 | SOME v => help_answer xs' (acc@v)
+    in
+	help_answer xs []
+    end
 
 val count_wildcards = g (fn () => 1) (fn _ => 0)
 
