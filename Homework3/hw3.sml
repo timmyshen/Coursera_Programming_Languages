@@ -84,4 +84,47 @@ fun all_answers f xs =
 				     NONE => NONE
 				   | SOME zs => SOME (ys @ zs)
 
-fun count_wildcards p = g (fn () => 
+val count_wildcards = g (fn () => 1) (fn _ => 0)
+
+val count_wild_and_variable_lengths = g (fn () => 1) String.size
+
+fun count_some_var (s, p) = g (fn () => 0) (fn s' => if s = s' then 1 else 0) p
+
+fun check_pat p =
+    let
+	fun variable_strings p' =
+	    case p' of
+		Variable x => [x]
+	      | ConstructorP(_, p) => variable_strings p
+	      | TupleP ps => List.concat (map variable_strings ps)
+	      | _  => []
+	fun has_repeats xs =
+	    case xs of
+		[] => true
+	      | x::xs' => (List.exists (fn y => x = y) xs')
+			  orelse
+			  (has_repeats xs')
+    in
+	has_repeats (variable_strings p)
+    end
+
+fun match vp =
+    case vp of
+        (_,Wildcard) => SOME []
+      | (v, Variable s) => SOME [(s,v)]
+      | (Unit, UnitP) => SOME []
+      | (Const a, ConstP a') => if a = a'
+				then SOME []
+				else NONE
+      | (Tuple ps, TupleP vs) =>
+        if (length ps) = (length vs)
+        then all_answers match (ListPair.zip(ps, vs))
+        else NONE
+      | (Constructor(s1, p), ConstructorP(s2, v)) => if s1 = s2
+						     then match (p, v)
+                                                     else NONE
+      | _ => NONE;
+ 
+fun first_match v pat = 
+    SOME (first_answer (fn(pat) => match (v, pat)) pat)
+    handle NoAnswer => NONE;
