@@ -38,11 +38,21 @@ datatype typ = Anything
 fun only_capitals xs =
     List.filter (Char.isUpper o (fn s => String.sub(s, 0))) xs
 
+(* val only_capitals = List.filter (fn s => Char.isUpper (String.sub(s,0))) *)
+
 fun longest_string1 xs =
     foldl (fn (acc, x) =>
 		   if String.size acc > String.size x then acc
 		   else x
 	       ) "" xs
+
+(* Better style
+val longest_string1 = 
+    List.foldl (fn (s,sofar) => if String.size s > String.size sofar
+				then s
+				else sofar) 
+	       ""
+*)
 
 fun longest_string2 xs =
     foldl (fn (acc, x) =>
@@ -50,11 +60,27 @@ fun longest_string2 xs =
 		   else x
 	       ) "" xs
 
+(* Better style
+val longest_string2 = 
+    List.foldl (fn (s,sofar) => if String.size s >= String.size sofar
+				then s
+				else sofar) 
+	       ""
+*)
+
 fun longest_string_helper f xs=
     foldl (fn (acc, x) => 
 	      if f (String.size acc, String.size x) then acc
 	      else x
 	  ) "" xs
+
+(* Better style
+fun longest_string_helper f = 
+    List.foldl (fn (s,sofar) => if f(String.size s,String.size sofar)
+				then s
+				else sofar) 
+	       ""
+*)
 
 val longest_string3 = longest_string_helper (fn (a, b) => a > b)
 
@@ -91,6 +117,16 @@ fun all_answers f xs =
 	help_answer xs []
     end
 
+(* Better style
+let fun loop (acc,xs) =
+	    case xs of
+		[] => SOME acc
+	      | x::xs' => case f x of 
+			      NONE => NONE
+			    | SOME y => loop((y @ acc), xs')
+    in loop ([],xs) end
+*)
+
 val count_wildcards = g (fn () => 1) (fn _ => 0)
 
 val count_wild_and_variable_lengths = g (fn () => 1) String.size
@@ -115,6 +151,24 @@ fun check_pat p =
 	has_repeats (variable_strings p)
     end
 
+(* Sample answer
+fun check_pat pat = 
+    let fun get_vars pat =
+	    case pat of
+		Variable s => [s]
+	      | TupleP ps  => List.foldl (fn (p,vs) => get_vars p @ vs) [] ps
+	      | ConstructorP(_,p) => get_vars p
+	      | _          => []
+	fun unique xs = 
+	    case xs of
+		[]     => true
+	      | x::xs' => (not (List.exists (fn y => y=x) xs'))
+			  andalso unique xs'
+    in 
+	unique (get_vars pat)
+    end
+*)
+
 fun match vp =
     case vp of
         (_,Wildcard) => SOME []
@@ -131,7 +185,23 @@ fun match vp =
 						     then match (p, v)
                                                      else NONE
       | _ => NONE;
- 
-fun first_match v pat = 
-    SOME (first_answer (fn(pat) => match (v, pat)) pat)
+
+(* Sample answer
+fun match (valu,pat) =
+    case (valu,pat) of
+	(_,Wildcard)    => SOME []
+      | (_,Variable(s)) => SOME [(s,valu)]
+      | (Unit,UnitP)    => SOME []
+      | (Const i, ConstP j)    => if i=j then SOME [] else NONE
+      | (Tuple(vs),TupleP(ps)) => if length vs = length ps
+				  then all_answers match (ListPair.zip(vs,ps))
+				  else NONE
+      | (Constructor(s1,v), ConstructorP(s2,p)) => if s1=s2
+						   then match(v,p)
+						   else NONE
+      | _ => NONE
+*)
+
+fun first_match v ps = 
+    SOME (first_answer (fn p => match (v, p)) ps)
     handle NoAnswer => NONE;
