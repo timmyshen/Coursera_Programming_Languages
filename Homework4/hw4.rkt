@@ -60,5 +60,7 @@
 
 ; Problem 7.
 (define (stream-add-zero s)
-  (let ...
-    (lambda () (...))))
+  (lambda ()
+    (cons (cons 0 (car (s)))
+          (stream-add-zero (cdr (s))))))
+ 
