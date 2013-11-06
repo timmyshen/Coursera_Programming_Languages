@@ -38,6 +38,20 @@
   (letrec ([f (lambda (x) (cons x (lambda () (f (+ x 1)))))])
     (lambda () (f 1))))
 
+; A more powerful example
+(define powers-of-two
+  (letrec ([f (lambda (x) (cons x (lambda () (f (* x 2)))))])
+    (lambda () (f 2))))
+
+; Higher order function that uses stream
+(define (number-until stream tester)
+  (letrec ([f (lambda (stream ans)
+                (let ([pr (stream)])
+                  (if (tester (car pr))
+                      ans
+                      (f (cdr pr) (+ ans 1)))))])
+    (f stream 1)))
+
 ; Problem 5.
 (define funny-number-stream
   (letrec ([f (lambda (x)
@@ -63,4 +77,10 @@
   (lambda ()
     (cons (cons 0 (car (s)))
           (stream-add-zero (cdr (s))))))
- 
+
+; Problem 8.
+(define (cycle-lists xs ys)
+  ;(letrec (helper n)
+  (lambda ()
+    (cons (cons (car xs) (car ys))
+          (cycle-lists (cdr xs) (cdr ys)))))
