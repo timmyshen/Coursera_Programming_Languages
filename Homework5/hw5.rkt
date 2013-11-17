@@ -21,10 +21,16 @@
 (struct closure (env fun) #:transparent) 
 
 ;; Problem 1
-
-;; CHANGE (put your solutions here)
+(define (racketlist->mupllist rktlst)
+  (if (null? rktlst)
+      (aunit)
+      (apair (car rktlst) (racketlist->mupllist (cdr rktlst)))))
 
 ;; Problem 2
+(define (mupllist->racketlist muplst)
+  (if (aunit? muplst)
+      null
+      (cons (apair-e1 muplst) (mupllist->racketlist (apair-e2 muplst)))))
 
 ;; lookup a variable in an environment
 ;; Do NOT change this function
