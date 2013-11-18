@@ -54,6 +54,10 @@
                (int (+ (int-num v1) 
                        (int-num v2)))
                (error "MUPL addition applied to non-number")))]
+        [(fun? e) (closure env e)]
+        [(int? e) e]
+        [(ifgreater? e)
+         (let ([v1 (
         ;; CHANGE add more cases here
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
