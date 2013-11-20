@@ -267,19 +267,19 @@ class Tetris
 
   # creates the window and starts the game
   def initialize
-    @root = TetrisRoot.new
-    @timer = TetrisTimer.new
+    @root = TetrisRoot.new # defined in graphics
+    @timer = TetrisTimer.new # defined in graphics
     set_board
-    @running = true
-    key_bindings
-    buttons
+    @running = true # A status switch
+    key_bindings # method call. Define key bindings
+    buttons # method call. 
     run_game
   end
 
   # creates a canvas and the board that interacts with it
   def set_board
-    @canvas = TetrisCanvas.new
-    @board = Board.new(self)
+    @canvas = TetrisCanvas.new # defined in graphics
+    @board = Board.new(self) # Attention! Defined above!
     @canvas.place(@board.block_size * @board.num_rows + 3,
                   @board.block_size * @board.num_columns + 6, 24, 80)
     @board.draw
