@@ -117,6 +117,35 @@ class Point < GeometryValue
     @x = x
     @y = y
   end
+
+  # Note: no initialize method only because there is nothing it needs to do
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    Point.new(@x + dx, @y + dy)
+  end
+  def intersect other
+    other.intersectPoints self
+  end
+  def intersectPoint p
+    self # todo
+  end
+  def intersectLine line
+    self # todo
+  end
+  def intersectVerticalLine vline
+    self # todo
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  def intersectWithSegmentAsLineResult seg
+    self
+  end
 end
 
 class Line < GeometryValue
@@ -127,6 +156,35 @@ class Line < GeometryValue
     @m = m
     @b = b
   end
+
+  # Note: no initialize method only because there is nothing it needs to do
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    Line.new(@m, @b + dy - @m * dx)
+  end
+  def intersect other
+    other.intersectLine self
+  end
+  def intersectPoint p
+    self # todo
+  end
+  def intersectLine line
+    self # todo
+  end
+  def intersectVerticalLine vline
+    self # todo
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  def intersectWithSegmentAsLineResult seg
+    self
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -135,6 +193,35 @@ class VerticalLine < GeometryValue
   attr_reader :x
   def initialize x
     @x = x
+  end
+
+  # Note: no initialize method only because there is nothing it needs to do
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    VerticalLine.new(@x + dx)
+  end
+  def intersect other
+    other.intersectVerticalLine self
+  end
+  def intersectPoint p
+    self # todo
+  end
+  def intersectLine line
+    self # todo
+  end
+  def intersectVerticalLine vline
+    self # todo
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  def intersectWithSegmentAsLineResult seg
+    self
   end
 end
 
@@ -150,6 +237,35 @@ class LineSegment < GeometryValue
     @y1 = y1
     @x2 = x2
     @y2 = y2
+  end
+
+  # Note: no initialize method only because there is nothing it needs to do
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    LineSegment.new(@x1 + dx, @y1 + dy, @x2 + dx, @y2 + dy)
+  end
+  def intersect other
+    other.intersectLineSegment self
+  end
+  def intersectPoint p
+    self # todo
+  end
+  def intersectLine line
+    self # todo
+  end
+  def intersectVerticalLine vline
+    self # todo
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  def intersectWithSegmentAsLineResult seg
+    self
   end
 end
 
@@ -173,6 +289,15 @@ class Let < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+
+  def preprocess_prog
+    Let.new(@s, @e1.preprocess_prog, @e2.preprocess_prog)
+  end
+
+  def eval_prog env
+    ext_env = env.unshift([@s, (@e1.eval_prog env)])
+    @e2.eval_prog ext_env
+  end
 end
 
 class Var < GeometryExpression
@@ -186,6 +311,9 @@ class Var < GeometryExpression
     raise "undefined variable" if pr.nil?
     pr[1]
   end
+  def preprocess_prog
+    self
+  end
 end
 
 class Shift < GeometryExpression
@@ -195,5 +323,11 @@ class Shift < GeometryExpression
     @dx = dx
     @dy = dy
     @e = e
+  end
+  def preprocess_prog
+    Shift.new(@dx, @dy, @e.preprocess_prog)
+  end
+  def eval_prog env
+    (@e.eval_prog env).shift(@dx, @dy)
   end
 end
