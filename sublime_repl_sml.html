@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Coursera programming languages : Materials and code snippets for Programming Languages course on Coursera">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Coursera programming languages</title>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+            <a id="forkme_banner" href="https://class.coursera.org/proglang-003">View the course page.</a>
+
+            <h1 id="project_title">Set up SML environment in
+                <br>Sublime Text 2.</h1>
+            <h2 id="project_tagline">A step by step guide.</h2>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+        <section id="main_content" class="inner">
+            <h3>
+                <a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages">
+                    <span class="octicon octicon-link"></span>
+                </a>Introduction</h3>
+
+            <p>
+                The programming languages course provided by University of Washington and Coursera is one of my favorite. Not only I learned a lot from the course, but I also appreciated the way Dan taught the material. I'd recommend this course to anyone who is interested in pursuing a deeper understanding of programming languages.
+            </p>
+
+            <p>
+                However one thing that may trouble some students is the coding environment. Emacs is a fine choice and just like Dan said, it is worth learning and investing your time in. But someone may still want to program in a more "modern" environment, so to speak. This tutorial provides a step by step guide to how to set up the SML environment in Sublime Text 2.
+            </p>
+
+            <h3>Install Sublime Text 2 and package control.</h3>
+
+            <p>
+                Go to <a href="http://www.sublimetext.com/2">Sublime Text 2</a> official website and install it.
+            </p>
+
+            <p>
+                Go to <a href="https://sublime.wbond.net/installation">Sublime Package Control</a> website and follow the instruction to install package control.
+            </p>
+
+            <p>
+                After the previous steps, open sublime text and press
+                <strong>ctrl + shift + p</strong>. Type
+                <strong>install package</strong>and you should see the following.
+            </p>
+
+            <img src="./images/subl_sml/install_package.png">
+
+            <h3>Install SML</h3>
+
+            <p>
+                Fow Windows users, download the installer <a href="http://smlnj.cs.uchicago.edu/dist/working/110.77/smlnj-110.77.msi">smlnj-110.77</a> and run it. After installation, make sure sml is in the system path. One way to validate that is to run sml in cmd or powershell.
+            </p>
+
+            <img src="./images/subl_sml/cmd_sml.png">
+
+            <h3>Install SublimeREPL</h3>
+
+            <p>
+                In Sublime Text, press
+                <strong>ctrl + shift + p</strong>to bring up
+                <strong>command palette</strong>. Search for install package and press enter. The search for
+                <strong>SublimeREPL</strong>and press enter to install it.
+            </p>
+
+            <img src="./images/subl_sml/install_sublime_repl.png">
+
+            <p>
+                When installation is done, a set of REPL tools should appear under
+                <strong>Tools</strong>menu.
+            </p>
+
+            <img src="./images/subl_sml/tool_repl_sml.png">
+
+            <p>
+                Click on SML in SublimeREPL and a familiar screen should be in front of you.
+            </p>
+
+            <img src="./images/subl_sml/repl_init.png">
+
+            <p>At this stage, you could play around in the repl to see if it functions properly. Don't forget the semicolon at the end of each expression, though.</p>
+
+            <h3>Evaluate sml file in sublime repl.</h3>
+
+            <p>
+                Say you have worked on course homework and have finished your little script of first assignment. It's the time to see if you've done it correctly and passed the tests. Instead of using
+                <strong>use "*.sml";</strong>in command line, we could send the script file to repl in sublime.
+            </p>
+
+            <img src="./images/subl_sml/sml_file.png">
+
+            <p>To do so, you need to open both the file and the repl, as shown in the above snapshot. Then, go to
+                <strong>Tools -> SublimeREPL -> Eval in REPL</strong>and click on file.</p>
+
+            <img src="./images/subl_sml/repl_eval_file.png">
+
+            <p>Now switch to repl tab in Sublime and weirdly, you may see
+                <strong>ABSOLUTELY NOTHING</strong>.</p>
+
+            <img src="./images/subl_sml/repl_waiting.png">
+
+            <p>Well, actually if you stare at the screen long enough, you should see there's an equal sign there, signaling the expression is not finished yet.</p>
+
+            <p>All we need to do here is type in a
+                <strong>semicolon and strike enter</strong>
+            </p>
+
+            <img src="./images/subl_sml/repl_semicolon.png">
+
+            <p>Voila! Our script passes all tests and that's really awesome.</p>
+
+            <h4>Is this helpful? Let me know what do you think.</h4>
+
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'gitpagetimmyshen'; // required: replace example with your forum shortname
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+
+
+        </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+        <footer class="inner">
+            <p class="copyright">Maintained by <a href="https://github.com/timmyshen">timmyshen</a>
+            </p>
+            <p>Published with <a href="http://pages.github.com">GitHub Pages</a>
+            </p>
+        </footer>
+    </div>
+</body>
+
+</html>
