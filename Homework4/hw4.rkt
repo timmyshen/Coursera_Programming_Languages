@@ -30,8 +30,8 @@
       (cons (car (s)) (stream-for-n-steps (cdr (s)) (- n 1)))))
 
 ; A sample stream here
-(define ones
-  (lambda () (cons 1 ones)))
+;(define ones
+;  (lambda () (cons 1 ones)))
 
 ; Yet another sample stream
 (define nats
@@ -85,26 +85,38 @@
                       (lambda () (f (+ n 1)))))])
     (lambda () (f 0))))
 
+
+; Problem 9.
 (define (vector-assoc v vec)
-  (letrec ([f (lambda (n)
-                (if (>= n (vector-length vec)) #f
-                    (let ([vi (vector-ref vec n)])
-                      (cond [(not (pair? vi)) (f (+ n 1))]
-                            [(equal? (car vi) v) vi]
-                            [#t (f (+ n 1))]))))])
+  (let ([vlen (vector-length vec)])
+    (define (f idx)
+      (if (>= idx vlen)
+          #f
+          (let ([pr (vector-ref vec idx)])
+            (cond
+              [(not (pair? pr)) (f (+ idx 1))]
+              [(equal? v (car pr)) pr]
+              [#t (f (+ idx 1))]))))
     (f 0)))
- 
+
+
+; Problem 10
 (define (cached-assoc xs n)
-  (letrec ([cache-vec (make-vector n #f)]
-           [next 0]
-           [find (lambda (x)
-                (let ([ans (vector-assoc x cache-vec)])
-                 (if ans
-                     ans
-                     (let ([new-ans (assoc x xs)])
-                       new-ans
-                       (begin
-                         (vector-set! cache-vec next new-ans)
-                         (set! next (remainder (+ next 1) n))
-                         new-ans)))))])
-  find))
+  (letrec (
+           [cache (make-vector n #f)]
+           [cache-index 0]
+           [f (lambda (v)
+                (let ([pr (vector-assoc v cache)])
+                  (if pr
+                      pr
+                      (let ([new-pr (assoc v xs)])
+                        (vector-set! cache cache-index new-pr)
+                        (set! cache-index (modulo (+ cache-index 1) n))
+                        new-pr))))])
+    f))
+
+
+
+
+
+(define while-less 4)
