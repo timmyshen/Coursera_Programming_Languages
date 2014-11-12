@@ -96,36 +96,20 @@ fun first_answer f xs =
     case xs of
 	[] => raise NoAnswer
       | x::xs' => case f x of
-		     NONE => first_answer f xs'
-		   | SOME y => y
+		      NONE => first_answer f xs'
+		    | SOME y => y
+
 
 fun all_answers f xs =
-    (* Need tail call *)
-    (* case xs of
-	[] => SOME []
-      | x::xs' => case f x of
-		      NONE => NONE
-		    | SOME ys => case all_answers f xs' of
-				     NONE => NONE
-				   | SOME zs => SOME (ys @ zs)
-     *)
-    let fun help_answer [] acc = SOME acc
-	  | help_answer (x::xs') acc = case f x of
-					   NONE => NONE
-					 | SOME v => help_answer xs' (acc@v)
+    let 
+	fun help_answer [] acc = SOME acc
+	  | help_answer (x::xs') acc =
+	    case f x of
+		NONE => NONE
+	      | SOME v => help_answer xs' (acc @ v)
     in
 	help_answer xs []
     end
-
-(* Better style
-let fun loop (acc,xs) =
-	    case xs of
-		[] => SOME acc
-	      | x::xs' => case f x of 
-			      NONE => NONE
-			    | SOME y => loop((y @ acc), xs')
-    in loop ([],xs) end
-*)
 
 val count_wildcards = g (fn () => 1) (fn _ => 0)
 
@@ -133,27 +117,11 @@ val count_wild_and_variable_lengths = g (fn () => 1) String.size
 
 fun count_some_var (s, p) = g (fn () => 0) (fn s' => if s = s' then 1 else 0) p
 
-fun check_pat p =
-    let
-	fun variable_strings p' =
-	    case p' of
-		Variable x => [x]
-	      | ConstructorP(_, p) => variable_strings p
-	      | TupleP ps => List.concat (map variable_strings ps)
-	      | _  => []
-	fun has_repeats xs =
-	    case xs of
-		[] => true
-	      | x::xs' => (List.exists (fn y => x = y) xs')
-			  orelse
-			  (has_repeats xs')
-    in
-	has_repeats (variable_strings p)
-    end
 
-(* Sample answer
+(* Sample answer *)
 fun check_pat pat = 
-    let fun get_vars pat =
+    let
+	fun get_vars pat =
 	    case pat of
 		Variable s => [s]
 	      | TupleP ps  => List.foldl (fn (p,vs) => get_vars p @ vs) [] ps
@@ -167,7 +135,7 @@ fun check_pat pat =
     in 
 	unique (get_vars pat)
     end
-*)
+
 
 fun match vp =
     case vp of
