@@ -137,24 +137,7 @@ fun check_pat pat =
     end
 
 
-fun match vp =
-    case vp of
-        (_,Wildcard) => SOME []
-      | (v, Variable s) => SOME [(s,v)]
-      | (Unit, UnitP) => SOME []
-      | (Const a, ConstP a') => if a = a'
-				then SOME []
-				else NONE
-      | (Tuple ps, TupleP vs) =>
-        if (length ps) = (length vs)
-        then all_answers match (ListPair.zip(ps, vs))
-        else NONE
-      | (Constructor(s1, p), ConstructorP(s2, v)) => if s1 = s2
-						     then match (p, v)
-                                                     else NONE
-      | _ => NONE;
-
-(* Sample answer
+(* Sample answer *)
 fun match (valu,pat) =
     case (valu,pat) of
 	(_,Wildcard)    => SOME []
@@ -168,7 +151,8 @@ fun match (valu,pat) =
 						   then match(v,p)
 						   else NONE
       | _ => NONE
-*)
+
+
 
 fun first_match v ps = 
     SOME (first_answer (fn p => match (v, p)) ps)
